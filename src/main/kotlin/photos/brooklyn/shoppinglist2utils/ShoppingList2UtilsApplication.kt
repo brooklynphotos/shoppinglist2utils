@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Shoppinglist2utilsApplication
+class ShoppingList2UtilsApplication
 
 fun main(args: Array<String>) {
-    runApplication<Shoppinglist2utilsApplication>(*args)
+    runApplication<ShoppingList2UtilsApplication>(*args)
 }
