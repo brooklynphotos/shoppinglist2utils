@@ -98,7 +98,7 @@ object GoogleSheetUtils {
      */
     @Throws(IOException::class)
     @JvmStatic
-    fun retrieveData(spreadsheetId: String, range: String): List<List<Any>>? {
+    fun retrieveData(spreadsheetId: String, range: String): List<List<Any?>>? {
         // Build a new authorized API client service.
         val service = sheetsService
 
