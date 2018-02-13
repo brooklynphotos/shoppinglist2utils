@@ -15,7 +15,7 @@ const val SHOPPING_LIST_TABLE = "shopping_list"
 
 @Service
 class ListToSqlServiceImpl: ListToSqlService{
-    private val trimRegex = "^\\s+".toRegex()
+    private val trimRegex = "\n\\s*".toRegex()
 
     override fun convert(shoppingList: List<ShoppingListItem>, writer: PrintWriter) {
         shoppingList.associate { Pair(it.shop.id, it.shop) }.values.forEach{
@@ -34,7 +34,7 @@ class ListToSqlServiceImpl: ListToSqlService{
 
         // each item on the list
         shoppingList.forEach {
-            writer.println("INSERT INTO $ITEM_TABLE (id, name, description, default_section, section_uncertain) VALUES('${it.id}', '${it.item}', ${DataUtils.nullableSqlStringValue(it.description)}, ${it.section.id}, ${if(it.section.uncertain) 1 else 0})")
+            writer.println("INSERT INTO $ITEM_TABLE (id, name, description, default_section, section_uncertain) VALUES(${it.id}, '${it.item}', ${DataUtils.nullableSqlStringValue(it.description)}, ${it.section.id}, ${if(it.section.uncertain) 1 else 0})")
             val note =
             writer.println("""
                 INSERT INTO $SHOPPING_LIST_ITEM_TABLE (id, itemId, shoppingListId, shopId, quantity, note)
