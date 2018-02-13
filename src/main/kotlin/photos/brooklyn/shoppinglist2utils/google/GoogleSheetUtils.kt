@@ -98,14 +98,14 @@ object GoogleSheetUtils {
      */
     @Throws(IOException::class)
     @JvmStatic
-    fun retrieveData(spreadsheetId: String, range: String): List<List<Any?>>? {
+    fun retrieveData(spreadsheetId: String, range: String): List<List<String?>>? {
         // Build a new authorized API client service.
         val service = sheetsService
 
         val response = service.spreadsheets().values()
                 .get(spreadsheetId, range)
                 .execute()
-        return response.getValues()
+        return response.getValues().map{ it.map { it?.toString() } }
     }
 
 

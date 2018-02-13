@@ -1,3 +1,3 @@
 package photos.brooklyn.shoppinglist2utils.models
 
-data class Section (val id: Int, val name: String)
+data class Section (val id: Int, val name: String, val uncertain: Boolean=false)

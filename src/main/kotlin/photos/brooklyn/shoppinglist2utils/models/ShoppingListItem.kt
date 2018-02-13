@@ -5,7 +5,7 @@ data class ShoppingListItem (
     val item: String,
     val priority: Int,
     val bought: Boolean,
-    val quantity: Int,
+    val quantity: String, // free text to describe the quantity
     val section: Section,
     val description: String?,
     val note: String?,

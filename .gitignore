@@ -1,6 +1,7 @@
 # file: ~/.gitignore_global
 .DS_Store
 client_secret.json
+runoutput
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
