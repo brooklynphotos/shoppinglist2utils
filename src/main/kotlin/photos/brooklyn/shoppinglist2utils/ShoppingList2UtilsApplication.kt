@@ -18,11 +18,13 @@ class ShoppingList2UtilsApplication: CommandLineRunner {
     override fun run(vararg args: String?) {
         val f = File(args[0],"shoppinglist.sql")
         val writer = f.printWriter()
-        listToSqlService.convert(
-            rawDataService.loadRawData() ?: throw IllegalStateException("Should have gotten data"),
-            writer
-        )
-        println("wrote to ${f.absolutePath}")
+        writer.use {
+            listToSqlService.convert(
+                    rawDataService.loadRawData() ?: throw IllegalStateException("Should have gotten data"),
+                    writer
+            )
+            println("wrote to ${f.absolutePath}")
+        }
     }
 }
 

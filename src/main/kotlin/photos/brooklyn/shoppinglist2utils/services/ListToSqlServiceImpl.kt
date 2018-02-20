@@ -2,7 +2,8 @@ package photos.brooklyn.shoppinglist2utils.services
 
 import org.springframework.stereotype.Service
 import photos.brooklyn.shoppinglist2utils.models.ShoppingListItem
-import photos.brooklyn.shoppinglist2utils.utils.DataUtils
+import photos.brooklyn.shoppinglist2utils.utils.DataUtils.nullableSqlStringValue
+import photos.brooklyn.shoppinglist2utils.utils.DataUtils.escapeQuote
 import java.io.PrintWriter
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -19,10 +20,10 @@ class ListToSqlServiceImpl: ListToSqlService{
 
     override fun convert(shoppingList: List<ShoppingListItem>, writer: PrintWriter) {
         shoppingList.associate { Pair(it.shop.id, it.shop) }.values.forEach{
-            writer.println("INSERT INTO $SHOP_TABLE (id, name) VALUE('${it.id}', '${it.name}')")
+            writer.println("INSERT INTO $SHOP_TABLE (id, name) VALUES('${it.id}', '${it.name}')")
         }
         shoppingList.associate { Pair(it.section.id, it.section) }.values.forEach{
-            writer.println("INSERT INTO $SECTION_TABLE (id, name) VALUE('${it.id}', '${it.name}')")
+            writer.println("INSERT INTO $SECTION_TABLE (id, name) VALUES('${it.id}', '${escapeQuote(it.name)}')")
         }
         // shopping list
         val shoppingListId = 1 // always one for this import
@@ -30,15 +31,15 @@ class ListToSqlServiceImpl: ListToSqlService{
         val effectiveEpochTime = effectiveDate.atZone(ZoneId.systemDefault()).toEpochSecond()
         val endDate = effectiveDate.plusWeeks(1)
         val endDateEpochTime = endDate.atZone(ZoneId.systemDefault()).toEpochSecond()
-        writer.println("INSERT INTO $SHOPPING_LIST_TABLE (id, createdDate, effectiveDate, endDate, active) VALUES($shoppingListId, to_timestamp($effectiveEpochTime), to_timestamp($effectiveEpochTime), to_timestamp($endDateEpochTime, 1)")
+        writer.println("INSERT INTO $SHOPPING_LIST_TABLE (id, createdDate, effectiveDate, endDate, active) VALUES($shoppingListId, to_timestamp($effectiveEpochTime), to_timestamp($effectiveEpochTime), to_timestamp($endDateEpochTime, 1))")
 
         // each item on the list
         shoppingList.forEach {
-            writer.println("INSERT INTO $ITEM_TABLE (id, name, description, default_section, section_uncertain) VALUES(${it.id}, '${it.item}', ${DataUtils.nullableSqlStringValue(it.description)}, ${it.section.id}, ${if(it.section.uncertain) 1 else 0})")
+            writer.println("INSERT INTO $ITEM_TABLE (id, name, description, default_section, section_uncertain) VALUES(${it.id}, '${escapeQuote(it.item)}', ${nullableSqlStringValue(escapeQuote(it.description))}, ${it.section.id}, ${if(it.section.uncertain) 1 else 0})")
             val note =
             writer.println("""
                 INSERT INTO $SHOPPING_LIST_ITEM_TABLE (id, itemId, shoppingListId, shopId, quantity, note)
-                VALUES(${it.id}, ${it.id}, $shoppingListId, ${it.shop.id}, '${it.quantity}', ${DataUtils.nullableSqlStringValue(it.note)})
+                VALUES(${it.id}, ${it.id}, $shoppingListId, ${it.shop.id}, '${it.quantity}', ${nullableSqlStringValue(escapeQuote(it.note))})
             """.replace(trimRegex, ""))
         }
     }
